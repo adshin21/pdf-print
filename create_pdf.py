@@ -1,5 +1,5 @@
 from fpdf import FPDF 
-
+from pathlib import Path
 
 class PDF(FPDF):
 	
@@ -16,11 +16,18 @@ class PDF(FPDF):
 		self.ln(5)
 	
 	def write_before_table(self, before_table_data=[]):
+
+		# write first 3 lines as bold
+		cnt = 1
 		self.set_x(0)
-		self.set_font('helvetica', '', 10)
 		for row in before_table_data:
 			row_string = '  '.join(row)
+			if cnt <= 3:
+				self.set_font('helvetica', 'B', 10)
+			else:
+				self.set_font("")
 			self.cell(0,8,row_string, ln=True, align='C')
+			cnt += 1
 		self.ln()
 
 	def write_after_table(self, after_table=[]):
@@ -257,7 +264,7 @@ class PDF(FPDF):
 		self.line(x_left, y3, x_right, y3)
 
 
-def create_pdf(file_name="hello_world", before_table=[], table=[], after_table=[]):	
+def create_pdf(file_path="", before_table=[], table=[], after_table=[], output_path=""):	
 	pdf = PDF(orientation="P", unit="mm", format="A4")
 	pdf.add_page()
 	pdf.write_before_table(before_table)
@@ -269,8 +276,9 @@ def create_pdf(file_name="hello_world", before_table=[], table=[], after_table=[
 	pdf.create_table(
 		table, 
 		data_size=10, 
-		cell_width=[2, 27, 28, 35, 23, 23, 19, 15, 15, 21, 2], 
+		cell_width=[1, 27, 28, 35, 24, 24, 19, 15, 15, 21, 1], 
 		x_start=0, 
 		align_data=["", "", "", "", "", "", "C", "C", "C", "", ""])
 	pdf.write_after_table(after_table)
-	pdf.output(f'/Users/adityak.umar/xl/output/{file_name}.pdf')
+	file_name = Path(file_path).stem
+	pdf.output(f'{output_path}{file_name}.pdf')
