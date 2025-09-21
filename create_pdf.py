@@ -1,12 +1,13 @@
 from fpdf import FPDF 
 from pathlib import Path
+from config import image_path, output_path
 
 class PDF(FPDF):
 	
 	def header(self):
 		title_string = 'RECURRING DEPOSIT INSTALLMENT REPORT'
 		# logo
-		self.image('image.png', 6, 4, 50, 20)
+		self.image(image_path, 6, 4, 50, 20)
 		self.ln(1)
 		self.set_font('helvetica', 'B', 12)
 		title_width = self.get_string_width(title_string)
@@ -281,4 +282,5 @@ def create_pdf(file_path="", before_table=[], table=[], after_table=[], output_p
 		align_data=["", "", "", "", "", "", "C", "C", "C", "", ""])
 	pdf.write_after_table(after_table)
 	file_name = Path(file_path).stem
-	pdf.output(f'{output_path}{file_name}.pdf')
+
+	pdf.output(output_path)
