@@ -1,4 +1,5 @@
 import os
+import platform
 
 # This is the base directory of the project.
 # All other paths are relative to this path.
@@ -23,3 +24,6 @@ output_file = "output.pdf"
 # The full path to the output PDF file.
 # This is constructed from output_dir and output_file.
 output_path = os.path.join(output_dir, output_file)
+
+# The operating system platform.
+OS_PLATFORM = platform.system()

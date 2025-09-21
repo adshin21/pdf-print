@@ -5,7 +5,7 @@ from tkinter import ttk
 from tkinter import filedialog
 
 from script import main
-from config import output_path, input_dir
+from config import output_path, input_dir, OS_PLATFORM
 
 def openFile():
     filepath = filedialog.askopenfilename(
@@ -21,7 +21,12 @@ def openFile():
         main(filepath)
 		
 	# need to write a function to open the current pdf file
-        subprocess.call(["xdg-open", output_path])
+        if OS_PLATFORM == 'Darwin':
+            subprocess.call(['open', output_path])
+        elif OS_PLATFORM == 'Windows':
+            os.startfile(output_path)
+        else:
+            subprocess.call(['xdg-open', output_path])
 
 
 window = Tk(className="Parsing and Printing App")
