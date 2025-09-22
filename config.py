@@ -1,5 +1,7 @@
 import os
 import platform
+import logging
+from logging.handlers import RotatingFileHandler
 
 # This is the base directory of the project.
 # All other paths are relative to this path.
@@ -27,3 +29,23 @@ output_path = os.path.join(output_dir, output_file)
 
 # The operating system platform.
 OS_PLATFORM = platform.system()
+
+def setup_logging():
+    log_dir = os.path.join(os.path.expanduser("~"), "pdf-printer-logs")
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    log_file = os.path.join(log_dir, "app.log")
+
+    # Get the root logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+
+    # Create a rotating file handler
+    handler = RotatingFileHandler(log_file, maxBytes=1024 * 1024, backupCount=5)
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s")
+    handler.setFormatter(formatter)
+
+    # Add the handler to the root logger
+    if not logger.handlers:
+        logger.addHandler(handler)

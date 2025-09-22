@@ -1,12 +1,17 @@
-from fpdf import FPDF 
+from fpdf import FPDF
 from pathlib import Path
+import logging
 from config import image_path, output_path
+
+logger = logging.getLogger(__name__)
 
 class PDF(FPDF):
 	
 	def header(self):
+		logger.info("Creating PDF header.")
 		title_string = 'RECURRING DEPOSIT INSTALLMENT REPORT'
 		# logo
+		logger.info(f"Using image at: {image_path}")
 		self.image(image_path, 6, 4, 50, 20)
 		self.ln(1)
 		self.set_font('helvetica', 'B', 12)
@@ -17,7 +22,7 @@ class PDF(FPDF):
 		self.ln(5)
 	
 	def write_before_table(self, before_table_data=[]):
-
+		logger.info("Writing data before table.")
 		# write first 3 lines as bold
 		cnt = 1
 		self.set_x(0)
@@ -32,6 +37,7 @@ class PDF(FPDF):
 		self.ln()
 
 	def write_after_table(self, after_table=[]):
+		logger.info("Writing data after table.")
 		self.set_font('helvetica', 'B', 12)
 		c = 0 
 		next_x = 0
@@ -57,6 +63,7 @@ class PDF(FPDF):
 					 align_data='L', align_header='L', cell_width='even',
 					 x_start='x_default', emphasize_data=[], emphasize_style=None,
 					 emphasize_color=(0, 0, 0)):
+		logger.info("Creating table.")
 		"""
 		table_data: 
 					list of lists with first element being list of headers
@@ -265,7 +272,8 @@ class PDF(FPDF):
 		self.line(x_left, y3, x_right, y3)
 
 
-def create_pdf(file_path="", before_table=[], table=[], after_table=[], output_path=""):	
+def create_pdf(file_path="", before_table=[], table=[], after_table=[], output_path=""):
+	logger.info(f"Creating PDF for {file_path}.")
 	pdf = PDF(orientation="P", unit="mm", format="A4")
 	pdf.add_page()
 	pdf.write_before_table(before_table)
@@ -283,4 +291,6 @@ def create_pdf(file_path="", before_table=[], table=[], after_table=[], output_p
 	pdf.write_after_table(after_table)
 	file_name = Path(file_path).stem
 
+	logger.info(f"Saving PDF to {output_path}.")
 	pdf.output(output_path)
+	logger.info("PDF creation complete.")
